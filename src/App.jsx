@@ -20,6 +20,14 @@ function App() {
     }
   };
 
+  const handleAnswerChange = (index, value) => {
+    setAnswers((prev) => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
+
   return (
     <div>
       <h1>Quiz App</h1>
@@ -38,14 +46,9 @@ function App() {
                 name="options"
                 value={opt}
                 checked={answers[currentQuestionIndex] === opt}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  setAnswers((prev) => {
-                    const updatedAnswers = [...prev];
-                    updatedAnswers[currentQuestionIndex] = newValue;
-                    return updatedAnswers;
-                  });
-                }}
+                onChange={(e) =>
+                  handleAnswerChange(currentQuestionIndex, e.target.value)
+                }
               />
               <label htmlFor={opt} className="px-2">
                 {opt}
