@@ -7,9 +7,11 @@ function App() {
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const currentQuestion = sampleData[currentQuestionIndex];
+  const [submitted, setSubmitted] = useState(false);
+  const [warning, setWarning] = useState(false);
 
   const nextQuestion = () => {
-    if (currentQuestionIndex < sampleData.length - 1) {
+    if (currentQuestionIndex < answers.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     }
   };
@@ -34,6 +36,30 @@ function App() {
     (answeredQuestions / answers.length) * 100,
   );
 
+  const handleSubmit = () => {
+    if (submitted) return;
+    if (answeredQuestions < answers.length) {
+      setWarning(true);
+    } else {
+      setSubmitted(true);
+    }
+  };
+
+  const handleBackTo = () => {
+    const targetIndex = answers.findIndex((answer) => answer === "");
+    if (targetIndex !== -1) {
+      setCurrentQuestionIndex(targetIndex);
+      setWarning(false);
+    } else {
+      setCurrentQuestionIndex(sampleData.length - 1);
+    }
+  };
+
+  const handleSubmitAnyway = () => {
+    setWarning(false);
+    setSubmitted(true);
+  };
+
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-xl space-y-6">
@@ -41,94 +67,188 @@ function App() {
           Quiz App
         </h1>
 
-        <div className="card bg-base-100 shadow-xl border border-base-300">
-          <div className="card-body gap-6">
-            <div className="bg-base-200 p-4 rounded-box">
-              <h2 className="text-lg font-semibold mb-2">Quiz Progress</h2>
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span>
-                    {`${answeredQuestions}/${answers.length}`}{" "}
-                    <span>Questions answered</span>
-                  </span>
-                  <p className="text-right font-medium">
-                    {percentageAnsweredQuestions}% completed
-                  </p>
-                </div>
-                <progress
-                  className="progress progress-primary w-full"
-                  value={answeredQuestions}
-                  max={answers.length}
-                ></progress>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-xl font-medium">
-                <span className="mr-2 text-primary font-bold">
-                  {currentQuestion.id}.
-                </span>
-                {currentQuestion.question}
-              </p>
-
-              <div className="space-y-2 mt-4">
-                {currentQuestion.options.map((opt) => (
-                  <div key={opt}>
-                    <label
-                      htmlFor={opt}
-                      className={`label cursor-pointer justify-start gap-3 p-3 rounded-lg border border-base-300 hover:bg-base-200 transition-colors ${
-                        answers[currentQuestionIndex] === opt
-                          ? "bg-base-200 border-primary"
-                          : ""
-                      }`}
-                    >
-                      <input
-                        className="radio radio-primary"
-                        type="radio"
-                        id={opt}
-                        name="options"
-                        value={opt}
-                        checked={answers[currentQuestionIndex] === opt}
-                        onChange={(e) =>
-                          handleAnswerChange(
-                            currentQuestionIndex,
-                            e.target.value,
-                          )
-                        }
-                      />
-                      <span className="label-text text-base font-medium px-2">
-                        {opt}
-                      </span>
-                    </label>
-                    <br />
+        {submitted ? (
+          <div className="hero min-h-[50vh] bg-base-200 rounded-box p-6">
+            <div className="hero-content text-center">
+              <div className="max-w-md card bg-base-100 shadow-xl p-8 border border-base-300">
+                <div className="flex justify-center mb-4">
+                  <div className="avatar placeholder">
+                    <div className="bg-success text-success-content w-16 rounded-full">
+                      <span className="text-2xl">✓</span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            <div className="card-actions justify-between items-center pt-4 border-t border-base-200">
-              <div className="flex gap-2">
-                <button
-                  className="btn btn-outline"
-                  onClick={previousQuestion}
-                  disabled={currentQuestionIndex === 0}
-                >
-                  Prev
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={nextQuestion}
-                  disabled={currentQuestionIndex === sampleData.length - 1}
-                >
-                  Next
-                </button>
+                <div className="alert alert-success shadow-sm mb-6 flex justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span className="font-semibold">
+                    Quiz Submitted Successfully!
+                  </span>
+                </div>
+
+                <h2 className="text-2xl font-bold tracking-tight mb-2">
+                  Thank you for participating!
+                </h2>
+                <p className="text-base-content/70 mb-6 text-sm">
+                  Your responses have been recorded. You can now close this
+                  window or review your overall performance dashboard.
+                </p>
+
+                <div className="card-actions justify-center gap-3">
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="btn btn-primary btn-sm md:btn-md"
+                  >
+                    Retake Quiz
+                  </button>
+                  <button className="btn btn-outline btn-sm md:btn-md">
+                    View Scoreboard
+                  </button>
+                </div>
               </div>
-              <p className="text-sm font-medium text-right text-base-content/70">
-                Question {currentQuestion.id} of {sampleData.length}
-              </p>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="card bg-base-100 shadow-xl border border-base-300">
+            <div className="card-body gap-6">
+              <div className="bg-base-200 p-4 rounded-box">
+                <h2 className="text-lg font-semibold mb-2">Quiz Progress</h2>
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span>
+                      {`${answeredQuestions}/${answers.length}`}{" "}
+                      <span>Questions answered</span>
+                    </span>
+                    <p className="text-right font-medium">
+                      {percentageAnsweredQuestions}% completed
+                    </p>
+                  </div>
+                  <progress
+                    className="progress progress-primary w-full"
+                    value={answeredQuestions}
+                    max={answers.length}
+                  ></progress>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-xl font-medium">
+                  <span className="mr-2 text-primary font-bold">
+                    {currentQuestion.id}.
+                  </span>
+                  {currentQuestion.question}
+                </p>
+
+                <div className="space-y-2 mt-4">
+                  {currentQuestion.options.map((opt) => (
+                    <div key={opt}>
+                      <label
+                        htmlFor={opt}
+                        className={`label cursor-pointer justify-start gap-3 p-3 rounded-lg border border-base-300 hover:bg-base-200 transition-colors ${
+                          answers[currentQuestionIndex] === opt
+                            ? "bg-base-200 border-primary"
+                            : ""
+                        }`}
+                      >
+                        <input
+                          className="radio radio-primary"
+                          type="radio"
+                          id={opt}
+                          name="options"
+                          disabled={submitted === true}
+                          value={opt}
+                          checked={answers[currentQuestionIndex] === opt}
+                          onChange={(e) =>
+                            handleAnswerChange(
+                              currentQuestionIndex,
+                              e.target.value,
+                            )
+                          }
+                        />
+                        <span className="label-text text-base font-medium px-2">
+                          {opt}
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="card-actions justify-between items-center pt-4 border-t border-base-200">
+                <div className="flex gap-2">
+                  <button
+                    className="btn btn-outline"
+                    onClick={previousQuestion}
+                    disabled={currentQuestionIndex === 0}
+                  >
+                    Prev
+                  </button>
+                  {currentQuestionIndex === answers.length - 1 ? (
+                    <button className="btn btn-primary" onClick={handleSubmit}>
+                      Submit Quiz
+                    </button>
+                  ) : (
+                    <button className="btn btn-primary" onClick={nextQuestion}>
+                      Next
+                    </button>
+                  )}
+                </div>
+                <p className="text-sm font-medium text-right text-base-content/70">
+                  Question {currentQuestion.id} of {answers.length}
+                </p>
+              </div>
+
+              {warning && (
+                <div className="alert alert-warning shadow-md mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 shrink-0 stroke-current"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    <span className="font-medium text-sm">
+                      Some questions are unanswered. Submit anyway?
+                    </span>
+                  </div>
+                  <div className="flex gap-2 w-full sm:w-auto justify-end">
+                    <button
+                      className="btn btn-sm btn-outline"
+                      onClick={handleBackTo}
+                    >
+                      Go to unanswered
+                    </button>
+                    <button
+                      className="btn btn-sm btn-neutral"
+                      onClick={handleSubmitAnyway}
+                    >
+                      Submit Anyway
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
