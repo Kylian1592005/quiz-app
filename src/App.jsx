@@ -10,6 +10,7 @@ function App() {
   const currentQuestion = sampleData[currentQuestionIndex];
   const [submitted, setSubmitted] = useState(false);
   const [warning, setWarning] = useState(false);
+  const [viewBoard, setViewBoard] = useState(false);
 
   const nextQuestion = () => {
     if (currentQuestionIndex < answers.length - 1) {
@@ -61,6 +62,10 @@ function App() {
     setSubmitted(true);
   };
 
+  const handleViewBoard = () => {
+    setViewBoard(true);
+  }
+
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-xl space-y-6">
@@ -69,7 +74,7 @@ function App() {
         </h1>
 
         {submitted ? (
-          <Submission />
+          <Submission viewBoard={viewBoard} onViewBoard={handleViewBoard} />
         ) : (
           <div className="card bg-base-100 shadow-xl border border-base-300">
             <div className="card-body gap-6">
