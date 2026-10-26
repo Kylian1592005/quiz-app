@@ -32,15 +32,15 @@ function App() {
     });
   };
 
-  const answeredQuestions = answers.filter((answer) => answer !== "").length;
+  const answeredQuestions = answers.filter((answer) => answer !== "");
 
   const percentageAnsweredQuestions = Math.floor(
-    (answeredQuestions / answers.length) * 100,
+    (answeredQuestions.length / answers.length) * 100,
   );
 
   const handleSubmit = () => {
     if (submitted) return;
-    if (answeredQuestions < answers.length) {
+    if (answeredQuestions.length < answers.length) {
       setWarning(true);
     } else {
       setSubmitted(true);
@@ -64,7 +64,41 @@ function App() {
 
   const handleViewBoard = () => {
     setViewBoard(true);
-  }
+  };
+
+  /*const correctAnswers = sampleData.filter((data, index) => {
+    return answers[index] === data.correctAnswer;
+  });
+
+  const incorrectAnswers = sampleData.filter((data, index) => {
+    return answers[index] !== "" && answers[index] !== data.correctAnswer;
+  });
+
+  const unansweredAnswers = sampleData.filter((_, index) => {
+    return answers[index] === "";
+  });
+  const correctCount = correctAnswers.length;
+  const incorrectCount = incorrectAnswers.length;
+  const unAnsweredCount = unansweredAnswers.length; */
+
+  const { correctCount, incorrectCount, unAnsweredCount } = sampleData.reduce(
+    (acc, data, index) => {
+      const userAnswer = answers[index];
+
+      if (userAnswer === "") {
+        acc.unAnsweredCount++;
+      } else if (userAnswer === data.correctAnswer) {
+        acc.correctCount++;
+      } else {
+        acc.incorrectCount++;
+      }
+
+      return acc;
+    },
+    { correctCount: 0, incorrectCount: 0, unAnsweredCount: 0 },
+  );
+
+  const scorePercentage = Math.round(correctCount / answers.length) * 100;
 
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4 flex flex-col items-center justify-center">
@@ -74,7 +108,14 @@ function App() {
         </h1>
 
         {submitted ? (
-          <Submission viewBoard={viewBoard} onViewBoard={handleViewBoard} />
+          <Submission
+            viewBoard={viewBoard}
+            onViewBoard={handleViewBoard}
+            correctCount={correctCount}
+            incorrectCount={incorrectCount}
+            unAnsweredCount={unAnsweredCount}
+            scorePercentage={scorePercentage}
+          />
         ) : (
           <div className="card bg-base-100 shadow-xl border border-base-300">
             <div className="card-body gap-6">
@@ -83,7 +124,7 @@ function App() {
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between items-center text-sm">
                     <span>
-                      {`${answeredQuestions}/${answers.length}`}{" "}
+                      {`${answeredQuestions.length}/${answers.length}`}{" "}
                       <span>Questions answered</span>
                     </span>
                     <p className="text-right font-medium">

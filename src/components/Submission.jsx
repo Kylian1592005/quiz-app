@@ -1,10 +1,17 @@
 import ViewBoard from "./ViewBoard";
 
-export default function Submission({ viewBoard, onViewBoard }) {
+export default function Submission({
+  viewBoard,
+  onViewBoard,
+  correctCount,
+  incorrectCount,
+  unAnsweredCount,
+  scorePercentage
+}) {
   return (
-    <div>
+    <>
       {viewBoard ? (
-        <ViewBoard />
+        <ViewBoard correctCount={correctCount} incorrectCount={incorrectCount} unAnsweredCount={unAnsweredCount} scorePercentage={scorePercentage} />
       ) : (
         <div className="hero min-h-[50vh] bg-base-200 rounded-box p-6">
           <div className="hero-content text-center">
@@ -46,12 +53,6 @@ export default function Submission({ viewBoard, onViewBoard }) {
 
               <div className="card-actions justify-center gap-3">
                 <button
-                  onClick={() => window.location.reload()}
-                  className="btn btn-primary btn-sm md:btn-md"
-                >
-                  Retake Quiz
-                </button>
-                <button
                   onClick={onViewBoard}
                   className="btn btn-outline btn-sm md:btn-md"
                 >
@@ -62,6 +63,6 @@ export default function Submission({ viewBoard, onViewBoard }) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
