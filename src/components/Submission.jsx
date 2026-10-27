@@ -6,19 +6,28 @@ export default function Submission({
   correctCount,
   incorrectCount,
   unAnsweredCount,
-  scorePercentage
+  scorePercentage,
+  onRetakeQuiz,
+  answers
 }) {
   return (
     <>
       {viewBoard ? (
-        <ViewBoard correctCount={correctCount} incorrectCount={incorrectCount} unAnsweredCount={unAnsweredCount} scorePercentage={scorePercentage} />
+        <ViewBoard
+          correctCount={correctCount}
+          incorrectCount={incorrectCount}
+          unAnsweredCount={unAnsweredCount}
+          scorePercentage={scorePercentage}
+          onRetakeQuiz={onRetakeQuiz}
+          answers={answers}
+        />
       ) : (
         <div className="hero min-h-[50vh] bg-base-200 rounded-box p-6">
           <div className="hero-content text-center">
             <div className="max-w-md card bg-base-100 shadow-xl p-8 border border-base-300">
               <div className="flex justify-center mb-4">
                 <div className="avatar placeholder">
-                  <div className="bg-success text-success-content w-16 rounded-full">
+                  <div className="bg-success text-success-content w-16 h-16 rounded-full flex items-center justify-center">
                     <span className="text-2xl">✓</span>
                   </div>
                 </div>

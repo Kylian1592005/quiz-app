@@ -100,6 +100,13 @@ function App() {
 
   const scorePercentage = Math.round(correctCount / answers.length) * 100;
 
+  const handleRetakeQuiz = () => {
+    setAnswers(Array.from({ length: sampleData.length }, () => ""));
+    setCurrentQuestionIndex(0);
+    setSubmitted(false);
+    setWarning(false);
+  };
+
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-xl space-y-6">
@@ -115,6 +122,8 @@ function App() {
             incorrectCount={incorrectCount}
             unAnsweredCount={unAnsweredCount}
             scorePercentage={scorePercentage}
+            onRetakeQuiz={handleRetakeQuiz}
+            answers={answers}
           />
         ) : (
           <div className="card bg-base-100 shadow-xl border border-base-300">
