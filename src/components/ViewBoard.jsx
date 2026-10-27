@@ -18,7 +18,7 @@ export default function ViewBoard({
   return (
     <div className="card bg-base-100 shadow-xl border border-base-300 w-full max-w-md mx-auto">
       {answerReview ? (
-        <AnswerReview answers={answers} />
+        <AnswerReview answers={answers} onRetakeQuiz={onRetakeQuiz} />
       ) : (
         <div className="card-body items-center text-center gap-6">
           <div>

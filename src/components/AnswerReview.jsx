@@ -1,6 +1,6 @@
 import { sampleData } from "../data/sampleData";
 
-export default function AnswerReview({ answers }) {
+export default function AnswerReview({ answers, onRetakeQuiz }) {
   return (
     <div className="card bg-base-100 shadow-xl border border-base-300 w-full max-w-2xl mx-auto">
       <div className="card-body gap-6">
@@ -77,6 +77,15 @@ export default function AnswerReview({ answers }) {
               </div>
             );
           })}
+        </div>
+
+        <div className="flex justify-end pt-2 border-t border-base-200">
+          <button
+            onClick={onRetakeQuiz}
+            className="btn btn-primary btn-sm md:btn-md"
+          >
+            Retake Quiz
+          </button>
         </div>
       </div>
     </div>
